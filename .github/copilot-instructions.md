@@ -18,13 +18,13 @@ This repository contains **NameFilter**, a SourceMod plugin that filters and enf
 
 - **Language**: SourcePawn (SourceMod scripting language)
 - **Platform**: SourceMod 1.12+ (minimum version 1.11.0 supported)
-- **Build Tool**: SourceKnight (see `sourceknight.yaml`)
+- **Build Tool**: Native GitHub Actions (see `.github/workflows/ci.yml`)
 - **Current Version**: 2.0.3 (see plugin myinfo)
 - **Dependencies**: 
   - SourceMod core (SDKTools, Regex)
   - MultiColors plugin (for colored chat messages)
   - BaseComm (for gag detection)
-- **Compiler**: SourcePawn Compiler (spcomp) via SourceKnight automation
+- **Compiler**: SourcePawn Compiler (spcomp) via `rumblefrog/setup-sp` GitHub Action
 
 ## Project Structure
 
@@ -39,34 +39,32 @@ addons/sourcemod/
 .github/
 ├── workflows/
 │   └── ci.yml                 # CI/CD pipeline
-sourceknight.yaml              # Build configuration
 ```
 
 ## Build System & Testing
 
 ### Building the Plugin
-The project uses SourceKnight for automated building and dependency management:
+The project uses native GitHub Actions for automated building and dependency management:
 
 ```bash
-# Using SourceKnight (recommended - used in CI)
-# The build process is automated via GitHub Actions
-# Local builds require SourceKnight installation
+# Build is automated via GitHub Actions (see .github/workflows/ci.yml)
+# Local builds require the SourcePawn compiler (spcomp) and the MultiColors include
 
 # Manual compilation (if SourceMod compiler available)
-spcomp -i includes/ addons/sourcemod/scripting/NameFilter.sp
+spcomp -i addons/sourcemod/scripting/include addons/sourcemod/scripting/NameFilter.sp
 ```
 
-### SourceKnight Configuration
-The `sourceknight.yaml` file defines:
-- SourceMod 1.11.0-git6934 dependency
-- MultiColors plugin dependency from GitHub
-- Build output to `/addons/sourcemod/plugins`
+### CI Configuration
+The `.github/workflows/ci.yml` workflow defines:
+- SourceMod 1.12.x compiler via `rumblefrog/setup-sp`
+- MultiColors plugin dependency cloned from GitHub
+- Build output to `addons/sourcemod/plugins`
 - Package structure for releases
 
 ### CI/CD Pipeline
-- Automated builds on push/PR to main/master branches
-- Uses GitHub Actions with Ubuntu 24.04
-- Uses `maxime1907/action-sourceknight@v1` action
+- Automated builds on push/PR/workflow_dispatch
+- Uses GitHub Actions with `ubuntu-latest`
+- Uses `rumblefrog/setup-sp` to install the SourcePawn compiler
 - Creates packaged releases with plugins, configs, and translations
 - Artifacts include complete SourceMod addon structure
 
